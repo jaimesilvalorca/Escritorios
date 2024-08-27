@@ -1,23 +1,30 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import { Badge, Button, Divider } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-
-import AccessibilityNewSharpIcon from '@mui/icons-material/AccessibilityNewSharp';
 import { Outlet } from 'react-router-dom';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
+import CurrencyBitcoinOutlinedIcon from '@mui/icons-material/CurrencyBitcoinOutlined';
+import useStore from '../store/store';
+
+const menuItems = [
+  { text: 'INICIO', icon: <HomeOutlinedIcon />, badgeContent: 0 },
+  { text: 'BIT', icon: <CurrencyBitcoinOutlinedIcon />, badgeContent: 990 },
+  { text: 'CHAT', icon: <ChatBubbleOutlineOutlinedIcon />, badgeContent: 7 }
+];
 
 const drawerWidth = 240;
 
@@ -47,7 +54,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'flex-end',
   padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -90,16 +96,22 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
+  const { logout } = useStore((state) => ({ logout: state.logout }))
+  const handleLogout = ()=>{
+    logout()
+  }
 
 
   const handleDrawer = () => {
     setOpen(!open);
+    
+
   };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" >
+      <AppBar position="fixed">
         <Toolbar>
           <IconButton
             color="inherit"
@@ -124,7 +136,7 @@ export default function MiniDrawer() {
           </IconButton>
         </DrawerHeader>
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          {menuItems.map(({ text, icon, badgeContent }) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
                 sx={{
@@ -140,18 +152,25 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <AccessibilityNewSharpIcon /> : <MenuIcon />}
+                  <Badge badgeContent={badgeContent} color="error">
+                    {icon}
+                  </Badge>
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
+
             </ListItem>
           ))}
+          <Button onClick={handleLogout}>
+            logout
+          </Button>
+          <Divider />
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Outlet />
-</Box>
+      </Box>
     </Box>
   );
 }
