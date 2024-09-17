@@ -7,18 +7,18 @@ import Prueba from './views/Prueba.jsx';
  
 
 function App() {
-  const { user } = useStore((state) => ({ user: state.user })); 
+  // const { user } = useStore((state) => ({ user: state.user })); 
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/login' element={<Login />} />
-        <Route element={user ? <MiniDrawer /> : <Navigate to="/login" />}>
-          <Route path='/' element={user ? <Escritorio /> : <Navigate to="/login" />} />
-          <Route path='/prueba' element={user ? <Prueba /> : <Navigate to="/login" />} />
-
+        <Route element={<MiniDrawer />}>
+          <Route path='/' element={<Escritorio />} />
+          <Route path='/prueba' element={<Prueba />} />
         </Route>
       </Routes>
+
     </BrowserRouter>
   );
 }
